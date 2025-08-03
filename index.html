@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Company Dashboard</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: ["class"],
+        theme: {
+          extend: {
+            colors: {
+              border: "hsl(var(--border))",
+              input: "hsl(var(--input))",
+              ring: "hsl(var(--ring))",
+              background: "hsl(var(--background))",
+              foreground: "hsl(var(--foreground))",
+              primary: {
+                DEFAULT: "hsl(var(--primary))",
+                foreground: "hsl(var(--primary-foreground))",
+              },
+              secondary: {
+                DEFAULT: "hsl(var(--secondary))",
+                foreground: "hsl(var(--secondary-foreground))",
+              },
+              destructive: {
+                DEFAULT: "hsl(var(--destructive))",
+                foreground: "hsl(var(--destructive-foreground))",
+              },
+              muted: {
+                DEFAULT: "hsl(var(--muted))",
+                foreground: "hsl(var(--muted-foreground))",
+              },
+              accent: {
+                DEFAULT: "hsl(var(--accent))",
+                foreground: "hsl(var(--accent-foreground))",
+              },
+              popover: {
+                DEFAULT: "hsl(var(--popover))",
+                foreground: "hsl(var(--popover-foreground))",
+              },
+              card: {
+                DEFAULT: "hsl(var(--card))",
+                foreground: "hsl(var(--card-foreground))",
+              },
+            },
+          },
+        },
+      }
+    </script>
+    <style>
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 222.2 47.4% 11.2%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 210 40% 96%;
+        --secondary-foreground: 222.2 84% 4.9%;
+        --muted: 210 40% 96%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96%;
+        --accent-foreground: 222.2 84% 4.9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
+        --radius: 0.5rem;
+      }
+
+      .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+      }
+
+      * {
+        border-color: hsl(var(--border));
+      }
+
+      body {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      // Simple component implementations for the dashboard
+      function DashboardLayout({ children, activeTab, onTabChange }) {
+        const tabs = [
+          { id: "candidates", label: "Candidates", icon: "👥" },
+          { id: "upload", label: "Upload", icon: "📤" },
+          { id: "jobs", label: "My Jobs", icon: "💼" },
+          { id: "scheduled", label: "Scheduled", icon: "📅" },
+          { id: "analytics", label: "Analytics", icon: "📊" },
+          { id: "settings", label: "Settings", icon: "⚙️" },
+        ];
+
+        return (
+          <div className="min-h-screen bg-gray-900 text-white">
+            <div className="flex">
+              {/* Sidebar */}
+              <div className="w-64 bg-gray-800 p-6">
+                <div className="mb-8">
+                  <h1 className="text-2xl font-bold">Company Dashboard</h1>
+                  <p className="text-gray-400 text-sm">AI Vetting Platform</p>
+                </div>
+                
+                <nav className="space-y-2">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => onTabChange(tab.id)}
+                      className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                        activeTab === tab.id
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-300 hover:bg-gray-700"
+                      }`}
+                    >
+                      <span className="mr-3">{tab.icon}</span>
+                      {tab.label}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Main content */}
+              <div className="flex-1 p-8">
+                {children}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function CandidatesView() {
+        const candidates = [
+          { id: 1, name: "Sarah Johnson", position: "Frontend Developer", score: 85, status: "Assessed" },
+          { id: 2, name: "Michael Chen", position: "Backend Engineer", score: 92, status: "Assessed" },
+          { id: 3, name: "Emily Davis", position: "UX Designer", score: 78, status: "Pending" },
+          { id: 4, name: "David Wilson", position: "DevOps Engineer", score: 88, status: "Assessed" },
+        ];
+
+        return (
+          <div>
+            <h1 className="text-3xl font-bold mb-6">Candidates</h1>
+            <div className="grid gap-4">
+              {candidates.map((candidate) => (
+                <div key={candidate.id} className="bg-gray-800 p-6 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-xl font-semibold">{candidate.name}</h3>
+                      <p className="text-gray-400">{candidate.position}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-lg font-bold ${
+                        candidate.score >= 80 ? 'text-green-400' : 
+                        candidate.score >= 70 ? 'text-yellow-400' : 'text-red-400'
+                      }`}>
+                        {candidate.score}%
+                      </div>
+                      <div className="text-sm text-gray-400">{candidate.status}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function UploadView() {
+        return (
+          <div>
+            <h1 className="text-3xl font-bold mb-6">Upload Candidates</h1>
+            <div className="bg-gray-800 p-8 rounded-lg border-2 border-dashed border-gray-600">
+              <div className="text-center">
+                <div className="text-6xl mb-4">📁</div>
+                <h3 className="text-xl font-semibold mb-2">Upload Resume</h3>
+                <p className="text-gray-400 mb-6">Drag and drop files here or click to browse</p>
+                <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold">
+                  Choose Files
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function MyJobsView({ onJobSelect }) {
+        const jobs = [
+          { id: 1, title: "Senior Frontend Developer", company: "TechCorp Inc.", candidates: 12 },
+          { id: 2, title: "Backend Engineer", company: "TechCorp Inc.", candidates: 8 },
+          { id: 3, title: "UX Designer", company: "TechCorp Inc.", candidates: 15 },
+        ];
+
+        return (
+          <div>
+            <h1 className="text-3xl font-bold mb-6">My Jobs</h1>
+            <div className="grid gap-4">
+              {jobs.map((job) => (
+                <div key={job.id} className="bg-gray-800 p-6 rounded-lg cursor-pointer hover:bg-gray-700" onClick={() => onJobSelect(job)}>
+                  <h3 className="text-xl font-semibold">{job.title}</h3>
+                  <p className="text-gray-400">{job.company}</p>
+                  <p className="text-sm text-gray-500 mt-2">{job.candidates} candidates</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function ScheduledView({ selectedJob, onClearJob }) {
+        return (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-3xl font-bold">Scheduled Interviews</h1>
+              {selectedJob && (
+                <button onClick={onClearJob} className="text-gray-400 hover:text-white">
+                  ← Back to Jobs
+                </button>
+              )}
+            </div>
+            
+            {selectedJob && (
+              <div className="bg-gray-800 p-6 rounded-lg mb-6">
+                <h2 className="text-xl font-semibold">{selectedJob.title}</h2>
+                <p className="text-gray-400">{selectedJob.company}</p>
+              </div>
+            )}
+
+            <div className="grid gap-4">
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-semibold">Sarah Johnson</h3>
+                    <p className="text-gray-400">Frontend Developer</p>
+                    <p className="text-sm text-gray-500">Score: 85%</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-gray-400">Today</div>
+                    <div className="text-sm text-blue-400">2:00 PM</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function AnalyticsView() {
+        return (
+          <div>
+            <h1 className="text-3xl font-bold mb-6">Analytics</h1>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Total Candidates</h3>
+                <div className="text-3xl font-bold text-blue-400">342</div>
+                <p className="text-sm text-gray-400">+12% from last month</p>
+              </div>
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Average Score</h3>
+                <div className="text-3xl font-bold text-green-400">78%</div>
+                <p className="text-sm text-gray-400">+5% from last month</p>
+              </div>
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Interviews Scheduled</h3>
+                <div className="text-3xl font-bold text-yellow-400">24</div>
+                <p className="text-sm text-gray-400">This week</p>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function SettingsView() {
+        return (
+          <div>
+            <h1 className="text-3xl font-bold mb-6">Settings</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-4">Profile Settings</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Company Name</label>
+                    <p className="text-gray-400">TechCorp Inc.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Admin Email</label>
+                    <p className="text-gray-400">admin@techcorp.com</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-4">AI Assessment</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Minimum Score Threshold</label>
+                    <p className="text-gray-400">Currently set to 70</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Assessment Model</label>
+                    <p className="text-gray-400">GPT-4 Enhanced</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function App() {
+        const [activeTab, setActiveTab] = useState("candidates");
+        const [selectedJob, setSelectedJob] = useState(null);
+
+        // Enable dark theme
+        useEffect(() => {
+          document.documentElement.classList.add("dark");
+        }, []);
+
+        const handleJobSelect = (job) => {
+          setSelectedJob(job);
+          setActiveTab("scheduled");
+        };
+
+        const renderContent = () => {
+          switch (activeTab) {
+            case "candidates":
+              return <CandidatesView />;
+            case "upload":
+              return <UploadView />;
+            case "jobs":
+              return <MyJobsView onJobSelect={handleJobSelect} />;
+            case "scheduled":
+              return <ScheduledView selectedJob={selectedJob} onClearJob={() => setSelectedJob(null)} />;
+            case "analytics":
+              return <AnalyticsView />;
+            case "settings":
+              return <SettingsView />;
+            default:
+              return <CandidatesView />;
+          }
+        };
+
+        return (
+          <DashboardLayout
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          >
+            {renderContent()}
+          </DashboardLayout>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+  </body>
+</html> 
